@@ -63,3 +63,5 @@ logs/
 
 # dist
 /dist
+/.claude
+/app/generated/prisma
