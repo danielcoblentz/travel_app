@@ -1,29 +1,29 @@
-// TODO: uncomment when auth-actions is implemented
-// import { login, logout } from "@/lib/auth-actions";
+import { login, logout } from "@/lib/auth-actions";
 import { Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 
-// nav bar w links
+
+//nav bar w links
 export default function Navbar() {
   return (
     <nav className="bg-white shadow-md border-b border-gray-200">
       <div className="container mx-auto flex justify-between items-center px-6 lg:px-8">
         <Link href="/" className="flex items-center">
           <div className="flex items-center space-x-2">
-            {/* TODO: add logo.png to public folder */}
-            {/* <Image src="/logo.png" alt="logo" width={50} height={50} /> */}
-            <span className="text-2xl font-bold text-gray-800">Travel planner</span>
+            <Image src="/logo.png" alt="logo" width={50} height={50} />
+            <span className="text-2xl font-bold text-grey-800">Travel planner</span>
           </div>
         </Link>
 
-        {/* links to the diff pages user can go to */}
+
+//links to the diff pages user can go to
         <div className="flex items-center space-x-4">
             <Link href={"/trips"} className="text-slate-900 hover:text-sky-500">My Trips</Link>
             <Link href={"/globe"} className="text-slate-900 hover:text-sky-500">Globe</Link>
 
-            {/* TODO: add onClick={login} when auth-actions is implemented */}
             <button className="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white p-2 rounded-sm cursor-pointer"
+              onClick={login}
             >
                 Sign in
                 <svg
