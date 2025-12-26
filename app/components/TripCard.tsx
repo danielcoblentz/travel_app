@@ -1,52 +1,50 @@
-// function that takes all trip info to display on a card 
-import Image from "next/image"
-
+// Displays a single trip summary card.
+import Image from "next/image";
 
 type TripCardProps = {
-    id: string
-    name: string
-    destination: string
-    startDate: string
-    endDate: string
-    imageUrl: string
-    status: "upcoming" | "ongoing" | "completed"
-}
-export default function TripCard (props:TripCardProps) {
-    return (
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
-            <div className="relative h-40 w-full">
-         <Image
-         src={props.imageUrl}
-         alt={props.name}
-         width={100}
-         height={100}
-         />
-        </div>
+  id: string;
+  name: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  imageUrl: string;
+  status: "upcoming" | "ongoing" | "completed";
+};
 
-          <div className="p-4 space-y-2">
+export default function TripCard(props: TripCardProps) {
+  const formatDate = (date: string) =>
+    new Date(date).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
+      <div className="relative h-40 w-full">
+        <Image src={props.imageUrl} alt={props.name} width={100} height={100} />
+      </div>
+
+      <div className="space-y-2 p-4">
         <h2 className="text-lg font-semibold">{props.name}</h2>
 
         <p className="text-sm text-gray-600">{props.destination}</p>
 
         <p className="text-sm text-gray-500">
-          {props.startDate} – {props.endDate}
+          {formatDate(props.startDate)} - {formatDate(props.endDate)}
         </p>
-
-        {/* Status badge */}
         <span
           className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${
-            status === "upcoming"
+            props.status === "upcoming"
               ? "bg-blue-100 text-blue-700"
-              : status === "ongoing"
+              : props.status === "ongoing"
               ? "bg-green-100 text-green-700"
               : "bg-gray-100 text-gray-600"
           }`}
         >
-          {status}
+          {props.status}
         </span>
       </div>
     </div>
-  )
+  );
 }
-
-
