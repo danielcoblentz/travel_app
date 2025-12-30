@@ -18,7 +18,6 @@ export default function Navbar() {
         </Link>
 
 
-//links to the diff pages user can go to
         <div className="flex items-center space-x-4">
             <Link href={"/trips"} className="text-slate-900 hover:text-sky-500">My Trips</Link>
             <Link href={"/globe"} className="text-slate-900 hover:text-sky-500">Globe</Link>

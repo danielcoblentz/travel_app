@@ -33,13 +33,13 @@ export default function TripsPage() {
   return (
     <>
       <div className="flex justify-end mb-4 pr-3">
-        <Link
-          href="/trips/new"
-          className="inline-flex items-center rounded-sm bg-gray-800 px-3 py-2 text-sm font-medium text-white transition hover:bg-gray-900"
-        >
-          Add trip
+        <Link href="/trips/new">
+          <button className="bg-gray-800 hover:bg-gray-900 text-white p-2 rounded-sm">
+            Add trip
+          </button>
         </Link>
       </div>
+
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {tripsWithStatus.map((trip) => (
