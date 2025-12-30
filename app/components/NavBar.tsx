@@ -19,7 +19,7 @@ export default function Navbar() {
 
 
         <div className="flex items-center space-x-4">
-            <Link href={"/trips"} className="text-slate-900 hover:text-sky-500">My Trips</Link>
+            <Link href={"/"} className="text-slate-900 hover:text-sky-500">My Trips</Link>
             <Link href={"/globe"} className="text-slate-900 hover:text-sky-500">Globe</Link>
 
             <button className="flex items-center justify-center bg-gray-800 hover:bg-gray-900 text-white p-2 rounded-sm cursor-pointer"

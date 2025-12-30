@@ -59,3 +59,26 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+// Replaced 'trips' with a proper Trip model and a related Image model
+model Trip {
+  id          String   @id @default(cuid())
+  title       String
+  destination String
+  startDate   DateTime
+  endDate     DateTime
+  images      Image[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Image {
+  id        String   @id @default(cuid())
+  url       String
+  filename  String?
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
