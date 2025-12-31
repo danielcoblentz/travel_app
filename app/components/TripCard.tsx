@@ -1,5 +1,8 @@
+"use client"
+
 // Displays a single trip summary card.
 import Image from "next/image";
+import MultiView from "./MultiView";
 
 type TripCardProps = {
   id: string;
@@ -30,9 +33,15 @@ export default function TripCard(props: TripCardProps) {
 
         <p className="text-sm text-gray-600">{props.destination}</p>
 
-        <p className="text-sm text-gray-500">
-          {formatDate(props.startDate)} - {formatDate(props.endDate)}
-        </p>
+        <div className="flex justify-between items-center">
+          <p className="text-sm text-gray-500">
+            {formatDate(props.startDate)} - {formatDate(props.endDate)}
+          </p>
+          <button className="bg-gray-800 hover:bg-gray-900 text-white px-3 py-1 rounded-sm text-sm">
+            Add location
+          </button>
+        </div>
+
         <span
           className={`inline-block rounded-full px-2 py-1 text-xs font-medium ${
             props.status === "upcoming"
@@ -44,6 +53,10 @@ export default function TripCard(props: TripCardProps) {
         >
           {props.status}
         </span>
+      </div>
+
+      <div className="p-4 border-t border-gray-200">
+        <MultiView />
       </div>
     </div>
   );

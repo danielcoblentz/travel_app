@@ -1,4 +1,3 @@
-// app/trips/page.tsx
 import Link from "next/link";
 import TripCard from "./components/TripCard";
 import { getTripStatus, TripStatus } from "./lib/trip";
@@ -41,11 +40,8 @@ export default function TripsPage() {
 
 
       <div className="flex justify-center mt-10">
-        <div className="w-full max-w-4xl">
+        <div className="w-full max-w-4xl space-y-6">
           <TripCard {...tripsWithStatus[0]} />
-          <button className="bg-grey-800 hover:bg-grey-900 text-white p-2 rounded-sm">
-            Add location
-          </button>
         </div>
       </div>
     </>
