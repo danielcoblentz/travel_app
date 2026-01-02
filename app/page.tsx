@@ -2,6 +2,7 @@ import Link from "next/link";
 import TripCard from "./components/TripCard";
 import { getTripStatus, TripStatus } from "./lib/trip";
 import TripsSearch from "./components/TripsSearch";
+import UploadButton from "./lib/upload-thing";
 
 type Trip = {
   id: string;
@@ -40,7 +41,7 @@ export default function TripsPage() {
 
   return (
     <>
-      {/* Move the search to the top of the page */}
+      {/* search to the top of the page */}
       <header className="mb-6">
         <TripsSearch trips={searchable} />
       </header>
