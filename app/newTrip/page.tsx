@@ -6,6 +6,5 @@ export default function NewTripPage() {
 		<div className="flex items-center justify-center h-screen">
 				<AddTrip />
 			</div>
-
 	);
 }

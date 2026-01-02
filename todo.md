@@ -16,3 +16,10 @@ edit / delete trip data
 
 extrenal APIs
 google maps to show markers for trips, allow selecting locations of map
+
+add filter / search to main apge
+add stripe checkout
+
+
+hotel & flight reservations
+role based accccess to the site (owners, users)

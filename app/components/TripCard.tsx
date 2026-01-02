@@ -1,6 +1,6 @@
 "use client"
 
-// Displays a single trip summary card.
+// Displays a single trip summary card
 import Image from "next/image";
 import MultiView from "./MultiView";
 
