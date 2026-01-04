@@ -2,7 +2,6 @@ import Link from "next/link";
 import TripCard from "./components/TripCard";
 import { getTripStatus, TripStatus } from "./lib/trip";
 import TripsSearch from "./components/TripsSearch";
-import UploadButton from "./lib/upload-thing";
 
 type Trip = {
   id: string;
