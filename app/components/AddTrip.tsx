@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { UploadButton } from "@/app/lib/upload-thing";
 
 export default function AddTrip() {
@@ -95,24 +96,33 @@ export default function AddTrip() {
         </div>
 
 
-      <label>Trip Image</label>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Trip Image</label>
 
-      {<imageUrl && (
-        <Image src={imageUrl} alt="Trip repview" className="w-full mb-4 rounded-md max-h-48 object-cover" width={300} height={100/>)}
+          {uploadedImage?.url && (
+            <Image
+              src={uploadedImage.url}
+              alt="Trip preview"
+              className="w-full mb-4 rounded-md max-h-48 object-cover"
+              width={300}
+              height={100}
+            />
+          )}
 
-      <UploadButton
-        endpoint="imageUploader"
-        onClientUploadComplete={(res) => {
-          if (res && res[0]?.ufsUrl) {
-            setUploadedImage({ url: res[0].ufsUrl, name: res[0].name });
-          }
-        }}
-        onUploadError={(error: Error) => {
-          console.error("upload error:", error);
-        }}
-      />
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              if (res && res[0]?.ufsUrl) {
+                setUploadedImage({ url: res[0].ufsUrl, name: res[0].name });
+              }
+            }}
+            onUploadError={(error: Error) => {
+              console.error("upload error:", error);
+            }}
+          />
+        </div>
 
-        <button type="submit" className="bg-gray-800 hover:bg-gray-900 text-white p-2 rounded">
+        <button type="submit" className="bg-gray-800 hover:bg-gray-900 text-white p-2 rounded w-full">
           Add Trip
         </button>
       </form>
