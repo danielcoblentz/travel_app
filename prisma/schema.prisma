@@ -23,6 +23,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  trips         Trip[]
 }
 
 model Account {
@@ -60,7 +61,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Replaced 'trips' with a proper Trip model and a related Image model
 model Trip {
   id          String   @id @default(cuid())
   title       String
@@ -68,6 +68,9 @@ model Trip {
   startDate   DateTime
   endDate     DateTime
   images      Image[]
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

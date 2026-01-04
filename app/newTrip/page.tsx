@@ -1,10 +1,13 @@
-"use client";
+import { redirect } from "next/navigation";
+import { auth } from "../auth";
 import AddTrip from "../components/AddTrip";
 
-export default function NewTripPage() {
-	return (
-		<div className="flex items-center justify-center h-screen">
-				<AddTrip />
-			</div>
-	);
+export default async function NewTripPage() {
+  const session = await auth();
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  return <AddTrip />;
 }

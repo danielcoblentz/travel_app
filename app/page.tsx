@@ -1,46 +1,25 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import TripCard from "./components/TripCard";
-import { getTripStatus, TripStatus } from "./lib/trip";
 import TripsSearch from "./components/TripsSearch";
+import { getTrips } from "./lib/get-trips";
+import { auth } from "./auth";
 
-type Trip = {
-  id: string;
-  name: string;
-  destination: string;
-  startDate: string;
-  endDate: string;
-  imageUrl: string;
-  status?: TripStatus;
-};
+export const dynamic = "force-dynamic";
 
-// sample data — replace with real source later
-const trips: Trip[] = [
-  {
-    id: "1",
-    name: "Japan Spring 2026",
-    destination: "Tokyo, Japan",
-    startDate: "2026-03-12",
-    endDate: "2026-03-26",
-    imageUrl: "/images/japan.jpg",
-  },
-  { id: "2", name: "Paris", destination: "Paris, France", startDate: "", endDate: "", imageUrl: "" },
-  { id: "3", name: "New York", destination: "New York, USA", startDate: "", endDate: "", imageUrl: "" },
-  { id: "4", name: "Tokyo", destination: "Tokyo, Japan", startDate: "", endDate: "", imageUrl: "" },
-  { id: "5", name: "London", destination: "London, UK", startDate: "", endDate: "", imageUrl: "" },
-];
+export default async function TripsPage() {
+  const session = await auth();
 
-const tripsWithStatus: (Trip & { status: TripStatus })[] = trips.map((trip) => ({
-  ...trip,
-  status: getTripStatus(new Date(trip.startDate), new Date(trip.endDate)) ?? "upcoming",
-}));
+  if (!session) {
+    redirect("/login");
+  }
 
-export default function TripsPage() {
-  // Map trips into the simple shape TripsSearch expects
+  const trips = await getTrips(session.user?.id);
+
   const searchable = trips.map((t) => ({ id: t.id, text: `${t.name} — ${t.destination}` }));
 
   return (
     <>
-      {/* search to the top of the page */}
       <header className="mb-6">
         <TripsSearch trips={searchable} />
       </header>
@@ -51,17 +30,20 @@ export default function TripsPage() {
         </Link>
       </div>
 
-      <div className="flex justify-center mt-10">
-        <div className="w-full max-w-4xl space-y-6">
-          {tripsWithStatus.length > 0 && <TripCard {...tripsWithStatus[0]} />}
+      {trips.length > 0 ? (
+        <div className="flex justify-center mt-10">
+          <div className="w-full max-w-4xl space-y-6">
+            {trips.map((trip) => (
+              <TripCard key={trip.id} {...trip} />
+            ))}
+          </div>
         </div>
-      </div>
-
-      <section className="mt-10">
-        <h2 className="text-center text-2xl mb-4">Trips</h2>
-        {/* No additional search here — TripsSearch at top is the single search bar */}
-        {/* ...existing content... */}
-      </section>
+      ) : (
+        <section className="mt-10">
+          <h2 className="text-center text-2xl mb-4 text-gray-500">No trips yet</h2>
+          <p className="text-center text-gray-400">Add your first trip to get started!</p>
+        </section>
+      )}
     </>
   );
 }

@@ -1,6 +1,5 @@
-"use client"
+"use client";
 
-// Displays a single trip summary card
 import Image from "next/image";
 import MultiView from "./MultiView";
 
@@ -15,17 +14,34 @@ type TripCardProps = {
 };
 
 export default function TripCard(props: TripCardProps) {
-  const formatDate = (date: string) =>
-    new Date(date).toLocaleDateString(undefined, {
+  const formatDate = (date: string) => {
+    if (!date) return "TBD";
+    const parsed = new Date(date);
+    if (isNaN(parsed.getTime())) return "TBD";
+    return parsed.toLocaleDateString(undefined, {
       month: "short",
       day: "numeric",
       year: "numeric",
     });
+  };
+
+  const hasValidImage = props.imageUrl && !props.imageUrl.includes("placeholder");
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
-      <div className="relative h-40 w-full">
-        <Image src={props.imageUrl} alt={props.name} width={100} height={100} />
+      <div className="relative h-40 w-full bg-gray-100">
+        {hasValidImage ? (
+          <Image
+            src={props.imageUrl}
+            alt={props.name}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-400">
+            No image
+          </div>
+        )}
       </div>
 
       <div className="space-y-2 p-4">

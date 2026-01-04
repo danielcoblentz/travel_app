@@ -4,35 +4,42 @@ import { prisma } from "./lib/prisma";
 import { redirect } from "next/navigation";
 import { auth } from "./auth";
 
-export async function createTrip(formData: FormData) {
+type CreateTripInput = {
+    title: string;
+    destination: string;
+    startDate: string;
+    endDate: string;
+    imageUrl?: string;
+    imageName?: string;
+};
+
+export async function createTrip(input: CreateTripInput) {
     const session = await auth();
-    if (!session || !session.user?.id) {
-        throw new Error("Not authenticated");
-    }
 
-    const title = formData.get("title")?.toString();
-    const description = formData.get("description")?.toString();
-    const imageUrl = formData.get("imageUrl")?.toString();
-    const startDateStr = formData.get("startdate")?.toString();
-    const endDateStr = formData.get("enddate")?.toString();
+    const { title, destination, startDate, endDate, imageUrl, imageName } = input;
 
-    if (!title || !description || !startDateStr || !endDateStr) {
+    if (!title || !destination || !startDate || !endDate) {
         throw new Error("All fields are required.");
     }
 
-    const startDate = new Date(startDateStr);
-    const endDate = new Date(endDateStr);
-
-    await prisma.trip.create({
+    const trip = await prisma.trip.create({
         data: {
             title,
-            description,
-            imageUrl,
-            startDate,
-            endDate,
-            userId: session.user.id,
+            destination,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate),
+            userId: session?.user?.id ?? null,
+            images: imageUrl ? {
+                create: {
+                    url: imageUrl,
+                    filename: imageName ?? null,
+                }
+            } : undefined,
+        },
+        include: {
+            images: true,
         },
     });
 
-    redirect("/trips");
+    redirect("/");
 }

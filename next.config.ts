@@ -1,11 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
-  remotePatterns: [
-    {
-      hostname: "xotk1fk5qe.ufs.sh"
-  },],},}
+    remotePatterns: [
+      {
+        hostname: "xotk1fk5qe.ufs.sh",
+      },
+      {
+        hostname: "avatars.githubusercontent.com",
+      },
+    ],
+  },
+};
 
 export default nextConfig;
