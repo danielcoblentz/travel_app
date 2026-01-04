@@ -94,33 +94,23 @@ export default function AddTrip() {
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Upload Image</label>
-          <UploadButton
-            endpoint="imageUploader" // you define this endpoint in your uploadthing config
-            onClientUploadComplete={(res) => {
-              if (res && res.length > 0) {
-                setUploadedImage({ url: res[0].url, name: res[0].name });
-              }
-            }}
-            onUploadError={(error: Error) => {
-              console.error("Upload error:", error.message);
-            }}
-          />
 
-          {uploadedImage && (
-            <div className="mt-3">
-              <img src={uploadedImage.url} alt="uploaded preview" className="w-32 h-32 object-cover rounded" />
-              <button
-                type="button"
-                onClick={() => setUploadedImage(null)}
-                className="text-sm text-red-600 mt-2"
-              >
-                Remove
-              </button>
-            </div>
-          )}
-        </div>
+      <label>Trip Image</label>
+
+      {<imageUrl && (
+        <Image src={imageUrl} alt="Trip repview" className="w-full mb-4 rounded-md max-h-48 object-cover" width={300} height={100/>)}
+
+      <UploadButton
+        endpoint="imageUploader"
+        onClientUploadComplete={(res) => {
+          if (res && res[0]?.ufsUrl) {
+            setUploadedImage({ url: res[0].ufsUrl, name: res[0].name });
+          }
+        }}
+        onUploadError={(error: Error) => {
+          console.error("upload error:", error);
+        }}
+      />
 
         <button type="submit" className="bg-gray-800 hover:bg-gray-900 text-white p-2 rounded">
           Add Trip

@@ -1,3 +1,7 @@
+declare module "uploadthing/next" {
+  export function createRouteHandler(opts: any): any;
+}
+
 import { createRouteHandler } from "uploadthing/next";
 
 import { ourFileRouter } from "./core";
