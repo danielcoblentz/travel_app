@@ -1,27 +1,53 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import TripCard from "./components/TripCard";
-import TripsSearch from "./components/TripsSearch";
-import { getTrips } from "./lib/get-trips";
-import { auth } from "./auth";
+import { getTripStatus, TripStatus } from "./lib/trip";
+import EventSearch from "./components/EventSearch";
+import { auth } from "@/app/auth";
 
-export const dynamic = "force-dynamic";
+type Trip = {
+  id: string;
+  name: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  imageUrl: string;
+  status?: TripStatus;
+};
+
+// sample data — replace with real source later
+const trips: Trip[] = [
+  {
+    id: "1",
+    name: "Japan Spring 2026",
+    destination: "Tokyo, Japan",
+    startDate: "2026-03-12",
+    endDate: "2026-03-26",
+    imageUrl: "/images/japan.jpg",
+  },
+  { id: "2", name: "Paris", destination: "Paris, France", startDate: "", endDate: "", imageUrl: "" },
+  { id: "3", name: "New York", destination: "New York, USA", startDate: "", endDate: "", imageUrl: "" },
+  { id: "4", name: "Tokyo", destination: "Tokyo, Japan", startDate: "", endDate: "", imageUrl: "" },
+  { id: "5", name: "London", destination: "London, UK", startDate: "", endDate: "", imageUrl: "" },
+];
+
+const tripsWithStatus: (Trip & { status: TripStatus })[] = trips.map((trip) => ({
+  ...trip,
+  status: getTripStatus(new Date(trip.startDate), new Date(trip.endDate)) ?? "upcoming",
+}));
 
 export default async function TripsPage() {
   const session = await auth();
 
   if (!session) {
-    redirect("/login");
+    redirect("/signin");
   }
-
-  const trips = await getTrips(session.user?.id);
-
-  const searchable = trips.map((t) => ({ id: t.id, text: `${t.name} — ${t.destination}` }));
 
   return (
     <>
+      {/* search events */}
       <header className="mb-6">
-        <TripsSearch trips={searchable} />
+        <EventSearch placeholder="Search events..." />
       </header>
 
       <div className="flex justify-end mb-4 pr-3">
@@ -30,20 +56,18 @@ export default async function TripsPage() {
         </Link>
       </div>
 
-      {trips.length > 0 ? (
-        <div className="flex justify-center mt-10">
-          <div className="w-full max-w-4xl space-y-6">
-            {trips.map((trip) => (
-              <TripCard key={trip.id} {...trip} />
-            ))}
-          </div>
+      <div className="flex justify-center mt-10">
+        <div className="w-full max-w-4xl space-y-6">
+          {tripsWithStatus.length > 0 && <TripCard {...tripsWithStatus[0]} />}
         </div>
-      ) : (
-        <section className="mt-10">
-          <h2 className="text-center text-2xl mb-4 text-gray-500">No trips yet</h2>
-          <p className="text-center text-gray-400">Add your first trip to get started!</p>
-        </section>
-      )}
+      </div>
+
+      <section className="mt-10">
+        <h2 className="text-center text-2xl mb-4">Trips</h2> 
+      </section>
+
+      <div className="space-y-6 container">
+      </div>
     </>
   );
 }
