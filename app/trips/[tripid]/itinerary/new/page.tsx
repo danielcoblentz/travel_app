@@ -1,6 +1,6 @@
-import React from "react";
+import NewLocationClient from "@/components/ui/new-location";
 
-export default async function NewLocation({ params }: { params: { tripid: string } }): Promise<JSX.Element> {
-    const { tripid } = params;
-    return <NewLocationClient tripId={tripId} />;
+export default async function NewLocation({ params }: { params: Promise<{ tripid: string }> }) {
+    const { tripid } = await params;
+    return <NewLocationClient tripId={tripid} />;
 }
