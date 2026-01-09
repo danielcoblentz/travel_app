@@ -24,8 +24,14 @@ export default function TripCard(props: TripCardProps) {
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
-      <div className="relative h-40 w-full">
-        <Image src={props.imageUrl} alt={props.name} width={100} height={100} />
+      <div className="relative h-56 w-full">
+        <Image
+          src={props.imageUrl}
+          alt={props.name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 800px"
+        />
       </div>
 
       <div className="space-y-2 p-4">
