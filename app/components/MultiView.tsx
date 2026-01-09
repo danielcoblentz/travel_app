@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { AppWindowIcon, CodeIcon } from "lucide-react"
+import { AppWindowIcon, CodeIcon, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
+
 import {
   Card,
   CardContent,
@@ -15,9 +16,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Trip } from "@/app/types/trip";
 
+type Props = Trip;
 // we want 3 views overview, iternary and map w ligth white background to show its selected then render content based on that
-export default function MultiView() {
+export default function MultiView(Props: Props) {
   const [itinerary, setItinerary] = useState("")
 
   return (
@@ -32,10 +35,18 @@ export default function MultiView() {
         <TabsContent value="overview">
           <Card>
             <CardHeader>
-              <CardTitle>Overview</CardTitle>
+              <CardTitle>Trip Summary</CardTitle>
               <CardDescription>
-                we will add the travel detils here later on this is a placeholder atm
-              </CardDescription>
+                  <p className="flex items-center gap-2">
+                    <Calendar size={17}/>
+                    {Props.startDate && Props.endDate
+                      ? (() => {
+                          const days = Math.round((new Date(Props.endDate).getTime() - new Date(Props.startDate).getTime()) / (1000 * 60 * 60 * 24));
+                          return `Length of trip: ${days} ${days === 1 ? "day" : "days"}`;
+                        })()
+                      : "Length of trip: N/A"}
+                  </p>
+                </CardDescription>
             </CardHeader>
             <CardContent>
               {/* display the itinerary here this is going to remain read-only */}
