@@ -1,3 +1,10 @@
+export type Location = {
+  id: string;
+  locationTitle: string;
+  lat: number;
+  lng: number;
+};
+
 export type Trip = {
   id: string;
   name: string;
@@ -6,4 +13,5 @@ export type Trip = {
   endDate: string;
   imageUrl: string;
   status: "upcoming" | "ongoing" | "completed";
+  locations?: Location[];
 };

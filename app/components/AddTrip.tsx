@@ -1,8 +1,11 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { UploadButton } from "@/app/lib/upload-thing";
 
 export default function AddTrip() {
+  const router = useRouter();
   const [trip, setTrip] = useState({
     name: "",
     destination: "",
@@ -25,7 +28,18 @@ export default function AddTrip() {
       image: uploadedImage,
     };
 
-    console.log("Trip data submitted:", payload);
+    const response = await fetch("/api/trips", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to create trip");
+      return;
+    }
 
     // reset form after submit
     setTrip({
@@ -35,6 +49,10 @@ export default function AddTrip() {
       endDate: "",
     });
     setUploadedImage(null);
+
+    // redirect to home page and refresh to show new trip
+    router.refresh();
+    router.push("/");
   };
 
   return (
@@ -94,24 +112,23 @@ export default function AddTrip() {
           />
         </div>
 
+        <label>Trip Image</label>
 
-      <label>Trip Image</label>
-
-      {<imageUrl && (
-        <Image src={imageUrl} alt="Trip repview" className="w-full mb-4 rounded-md max-h-48 object-cover" width={300} height={100/>
+        {uploadedImage?.url && (
+          <Image src={uploadedImage.url} alt="Trip preview" className="w-full mb-4 rounded-md max-h-48 object-cover" width={300} height={100} />
         )}
 
-      <UploadButton
-        endpoint="imageUploader"
-        onClientUploadComplete={(res) => {
-          if (res && res[0]?.ufsUrl) {
-            setUploadedImage({ url: res[0].ufsUrl, name: res[0].name });
-          }
-        }}
-        onUploadError={(error: Error) => {
-          console.error("upload error:", error);
-        }}
-      />
+        <UploadButton
+          endpoint="imageUploader"
+          onClientUploadComplete={(res) => {
+            if (res && res[0]?.ufsUrl) {
+              setUploadedImage({ url: res[0].ufsUrl, name: res[0].name });
+            }
+          }}
+          onUploadError={(error: Error) => {
+            console.error("upload error:", error);
+          }}
+        />
 
         <button type="submit" className="bg-gray-800 hover:bg-gray-900 text-white p-2 rounded">
           Add Trip

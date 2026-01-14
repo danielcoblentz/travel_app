@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { AppWindowIcon, CodeIcon, Calendar } from "lucide-react"
+import Link from "next/link"
+import { AppWindowIcon, CodeIcon, Calendar, MapPin, } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import {
@@ -34,11 +35,19 @@ export default function MultiView(Props: Props) {
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
       <Tabs defaultValue="overview">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="iternary">Iternary</TabsTrigger>
-          <TabsTrigger value="map">Map</TabsTrigger>
-        </TabsList>
+        <div className="flex items-center gap-2">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="iternary">Iternary</TabsTrigger>
+            <TabsTrigger value="map">Map</TabsTrigger>
+          </TabsList>
+          <Link href={`/trips/${Props.id}/itinerary/new`}>
+            <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <MapPin className="w-3 h-3" />
+              Add Location
+            </Button>
+          </Link>
+        </div>
 
         <TabsContent value="overview">
           <Card>
@@ -55,11 +64,23 @@ export default function MultiView(Props: Props) {
             </CardHeader>
             <CardContent>
               {/* display the itinerary here this is going to remain read-only */}
-              {itinerary ? (
-                <div className="whitespace-pre-wrap text-sm">{itinerary}</div>
+            <div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                <MapPin className="w-4 h-4" />
+                <span className="font-medium">Destinations</span>
+              </div>
+              {Props.locations && Props.locations.length > 0 ? (
+                <ul className="space-y-1">
+                  {Props.locations.map((location) => (
+                    <li key={location.id} className="text-sm">
+                      {location.locationTitle}
+                    </li>
+                  ))}
+                </ul>
               ) : (
-                <div className="text-sm text-muted-foreground">No itinerary yet.</div>
+                <p className="text-sm text-muted-foreground">No locations added yet.</p>
               )}
+            </div>
             </CardContent>
           </Card>
         </TabsContent>

@@ -27,7 +27,7 @@ export default async function TripsPage() {
 
   const trips = await prisma.trip.findMany({
     where: { userId: session?.user?.id },
-    include: { images: true },
+    include: { images: true, locations: true },
   });
 
   const sortedTrips = [...trips].sort(
@@ -49,6 +49,12 @@ export default async function TripsPage() {
     endDate: trip.endDate.toISOString().split("T")[0],
     imageUrl: trip.images[0]?.url ?? "/images/placeholder.jpg",
     status: getTripStatus(new Date(trip.startDate), new Date(trip.endDate)) ?? "upcoming",
+    locations: trip.locations.map((loc) => ({
+      id: loc.id,
+      locationTitle: loc.locationTitle,
+      lat: loc.lat,
+      lng: loc.lng,
+    })),
   }));
 
   return (

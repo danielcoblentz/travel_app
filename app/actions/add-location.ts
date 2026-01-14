@@ -2,9 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { auth } from "../auth";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../lib/prisma";
 
 async function  geocodeAddress(address: string) {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY!;
