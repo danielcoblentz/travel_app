@@ -41,7 +41,6 @@ export default function AddTrip() {
       return;
     }
 
-    // reset form after submit
     setTrip({
       name: "",
       destination: "",
@@ -50,7 +49,6 @@ export default function AddTrip() {
     });
     setUploadedImage(null);
 
-    // redirect to home page and refresh to show new trip
     router.refresh();
     router.push("/");
   };

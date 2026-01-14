@@ -3,7 +3,6 @@ import { auth } from "@/app/auth";
 import { prisma } from "@/app/lib/prisma";
 import { NextResponse } from "next/server";
 
-//finds all countries that the user will go to
 export async function GET() {
     try {
         const session = await auth();
@@ -29,7 +28,6 @@ export async function GET() {
             } 
         });
 
-        // Return empty array if no locations found
         if (!locations || locations.length === 0) {
             return NextResponse.json([]);
         }

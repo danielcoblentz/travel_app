@@ -39,12 +39,17 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  // Replace with your actual data fetching logic
-  const locations = [
-    { lat: 48.8566, lng: 2.3522, country: "France" },
-    { lat: 51.5074, lng: -0.1278, country: "United Kingdom" },
-    // Add your actual data source here
-  ];
+  const session = await auth();
 
-  return NextResponse.json(locations);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const trips = await prisma.trip.findMany({
+    where: { userId: session.user.id },
+    select: { id: true, title: true, destination: true },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return NextResponse.json(trips);
 }

@@ -15,7 +15,6 @@ export interface transformedLocation {
 }
 
 
-//boiler plate from docs @ react-globe.gl
 export default function GlobePage() {
     const globeRef = useRef<GlobeMethods | undefined>(undefined);
 
@@ -49,7 +48,6 @@ export default function GlobePage() {
         fetchLocations();
     }, []);
 
-    //controls globe attributes ref to docs for more 
     useEffect(() => {
         if (globeRef.current) {
             globeRef.current.controls().autoRotate = true;
@@ -57,8 +55,7 @@ export default function GlobePage() {
         }
 
     }, []);
-   
-    // main globe content
+
     return (
         
         <div className="min-h-screen bg-gradient-to-b to-gray-50 flex items-center justify-center">
