@@ -14,7 +14,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Trip } from "@/app/types/trip";
 import Map from "@/components/map";
@@ -36,7 +35,7 @@ export default function MultiView(props: Trip) {
         <div className="flex items-center gap-2">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="iternary">Iternary</TabsTrigger>
+            <TabsTrigger value="iternary">Itinerary</TabsTrigger>
             <TabsTrigger value="map">Map</TabsTrigger>
           </TabsList>
           <Link href={`/trips/${props.id}/itinerary/new`}>
@@ -90,23 +89,23 @@ export default function MultiView(props: Trip) {
         <TabsContent value="iternary">
           <Card>
             <CardHeader>
-              <CardTitle>Iternary</CardTitle>
-              <CardDescription>add something here</CardDescription>
+              <CardTitle>Itinerary</CardTitle>
+              <CardDescription>Your trip destinations</CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="itinerary-input">Full itinerary</Label>
-                <textarea
-                  id="itinerary-input"
-                  value={itinerary}
-                  onChange={(e) => setItinerary(e.target.value)}
-                  className="w-full min-h-[6rem] border px-2 py-1 rounded"
-                />
-              </div>
+            <CardContent>
+              {props.locations && props.locations.length > 0 ? (
+                <div className="space-y-2">
+                  {props.locations.map((location) => (
+                    <div key={location.id} className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 transition-colors border border-gray-100">
+                      <MapPin className="h-4 w-4 text-red-500" />
+                      <span className="font-medium">{location.locationTitle}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">No locations added yet.</p>
+              )}
             </CardContent>
-            <CardFooter>
-              <Button onClick={() => {}}>Save iternary</Button>
-            </CardFooter>
           </Card>
         </TabsContent>
 
