@@ -58,66 +58,43 @@ export default async function TripsPage() {
   }));
 
   return (
-    <>
-      <h1 className="text-3xl font-bold text-left tracking-tight p-4">Dashboard</h1>
-
-      <div className="flex justify-end mb-4 pr-3">
+    <div className="max-w-6xl mx-auto px-4">
+      <div className="flex items-center justify-between py-6">
+        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <Link href="/newTrip">
-          <button className="bg-gray-800 hover:bg-gray-900 text-white p-2 rounded-sm">Add trip</button>
+          <Button>Add trip</Button>
         </Link>
       </div>
 
-      <Card className="mx-4 mb-6">
+      <Card className="mb-6">
         <CardHeader>
           <CardTitle>Welcome back, {session.user?.name}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>
+          <p className="text-muted-foreground">
             {trips.length === 0
-              ? "No trips to display. Start planning your first trip by clicking the button above!"
+              ? "No trips yet. Start planning your first adventure!"
               : `You have ${trips.length} ${trips.length === 1 ? "trip" : "trips"} planned.${upcomingTrips.length > 0 ? ` ${upcomingTrips.length} upcoming.` : ""}`}
           </p>
         </CardContent>
-
-        <div>
-          <h2 className="text-xl font-semibold mb-4">
-            your recent trips
-          </h2>
-          {trips.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-8">
-                <h3 className="text-xl font-medium mb-2">No trips yet.</h3>
-              </CardContent>
-              <p className="text-center mb-4 max-w-md">
-                start creating your adventure by creating your first trip.
-              </p>
-              <Link href="/trips/new">
-                <Button>new trip</Button>
-              </Link>
-            </Card>
-          ) : null}
-
-
-        </div>
       </Card>
 
-      {/* search events */}
-      <header className="mb-6">
+      <div className="mb-6">
         <EventSearch placeholder="Search events..." />
-      </header>
+      </div>
 
-      <section className="mt-6 px-4">
-        <h2 className="text-center text-2xl mb-6">My Trips</h2>
+      <section className="pb-8">
+        <h2 className="text-2xl font-semibold mb-6">My Trips</h2>
         {tripsWithStatus.length === 0 ? (
           <p className="text-center text-gray-500">No trips yet. Add your first trip!</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tripsWithStatus.map((trip) => (
               <TripCard key={trip.id} {...trip} />
             ))}
           </div>
         )}
       </section>
-    </>
+    </div>
   );
 }
