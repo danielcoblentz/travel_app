@@ -106,17 +106,17 @@ export default async function TripsPage() {
         <EventSearch placeholder="Search events..." />
       </header>
 
-      <section className="mt-6">
+      <section className="mt-6 px-4">
         <h2 className="text-center text-2xl mb-6">My Trips</h2>
-        <div className="flex justify-center">
-          <div className="w-full max-w-4xl space-y-6 px-4">
-            {tripsWithStatus.length === 0 ? (
-              <p className="text-center text-gray-500">No trips yet. Add your first trip!</p>
-            ) : (
-              tripsWithStatus.map((trip) => <TripCard key={trip.id} {...trip} />)
-            )}
+        {tripsWithStatus.length === 0 ? (
+          <p className="text-center text-gray-500">No trips yet. Add your first trip!</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {tripsWithStatus.map((trip) => (
+              <TripCard key={trip.id} {...trip} />
+            ))}
           </div>
-        </div>
+        )}
       </section>
     </>
   );

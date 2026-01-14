@@ -1,26 +1,21 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import { Calendar, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-
-import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Trip } from "@/app/types/trip";
-import Map from "@/components/map";
+import { Trip } from "@/app/types/trip"
+import Map from "@/components/map"
+import SortableItinerary from "./SortableItinerary"
 
 export default function MultiView(props: Trip) {
-  const [itinerary, setItinerary] = useState("")
 
   const days =
     props.startDate && props.endDate
@@ -90,23 +85,19 @@ export default function MultiView(props: Trip) {
         <TabsContent value="iternary">
           <Card>
             <CardHeader>
-              <CardTitle>Iternary</CardTitle>
-              <CardDescription value="iternary">add something here</CardDescription>
+              <CardTitle>Itinerary</CardTitle>
+              <CardDescription>
+                your trip locations in order
+              </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="itinerary-input">Full itinerary</Label>
-                <textarea
-                  id="itinerary-input"
-                  value={itinerary}
-                  onChange={(e) => setItinerary(e.target.value)}
-                  className="w-full min-h-[6rem] border px-2 py-1 rounded"
-                />
-              </div>
+            <CardContent>
+              <SortableItinerary
+                locations={props.locations || []}
+                onReorder={(newLocations) => {
+                  console.log("reordered:", newLocations)
+                }}
+              />
             </CardContent>
-            <CardFooter>
-              <Button onClick={() => {}}>Save iternary</Button>
-            </CardFooter>
           </Card>
         </TabsContent>
 
