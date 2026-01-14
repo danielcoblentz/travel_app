@@ -3,6 +3,7 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -21,7 +22,17 @@ export default function Navbar() {
           {session && (
             <>
               <Link href="/" className="text-slate-900 hover:text-sky-500">My Trips</Link>
+              <Link href="/hotels" className="text-slate-900 hover:text-sky-500">Hotels</Link>
+              <Link href="/flights" className="text-slate-900 hover:text-sky-500">Flights</Link>
               <Link href="/globe" className="text-slate-900 hover:text-sky-500">Globe</Link>
+              {session.user?.role === "OWNER" && (
+                <Link href="/owner" className="text-emerald-600 hover:text-emerald-700 font-medium">
+                  Owner Dashboard
+                </Link>
+              )}
+              <Link href="/cart" className="text-slate-900 hover:text-sky-500">
+                <ShoppingCart className="w-5 h-5" />
+              </Link>
             </>
           )}
 
