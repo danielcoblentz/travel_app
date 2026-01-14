@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { AppWindowIcon, CodeIcon, Calendar, MapPin, } from "lucide-react"
+import { Calendar, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 import {
@@ -14,20 +14,18 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Trip } from "@/app/types/trip";
+import Map from "@/components/map";
 
-type Props = Trip;
-// we want 3 views overview, iternary and map w ligth white background to show its selected then render content based on that
-export default function MultiView(Props: Props) {
+export default function MultiView(props: Trip) {
   const [itinerary, setItinerary] = useState("")
 
   const days =
-    Props.startDate && Props.endDate
+    props.startDate && props.endDate
       ? Math.round(
-          (new Date(Props.endDate).getTime() - new Date(Props.startDate).getTime()) /
+          (new Date(props.endDate).getTime() - new Date(props.startDate).getTime()) /
             (1000 * 60 * 60 * 24)
         )
       : null
@@ -41,7 +39,7 @@ export default function MultiView(Props: Props) {
             <TabsTrigger value="iternary">Iternary</TabsTrigger>
             <TabsTrigger value="map">Map</TabsTrigger>
           </TabsList>
-          <Link href={`/trips/${Props.id}/itinerary/new`}>
+          <Link href={`/trips/${props.id}/itinerary/new`}>
             <Button variant="outline" size="sm" className="flex items-center gap-1">
               <MapPin className="w-3 h-3" />
               Add Location
@@ -56,27 +54,31 @@ export default function MultiView(Props: Props) {
               <CardDescription>
                   <Calendar size={17}/>
                   <p className="flex justify-center">
-                    {Props.startDate && Props.endDate
+                    {props.startDate && props.endDate
                       ? `length of trip: ${days} ${days === 1 ? "day" : "days"}`
                       : "length of trip: N/A"}
                   </p>
                 </CardDescription>
             </CardHeader>
             <CardContent>
-              {/* display the itinerary here this is going to remain read-only */}
             <div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                 <MapPin className="w-4 h-4" />
                 <span className="font-medium">Destinations</span>
               </div>
-              {Props.locations && Props.locations.length > 0 ? (
-                <ul className="space-y-1">
-                  {Props.locations.map((location) => (
-                    <li key={location.id} className="text-sm">
-                      {location.locationTitle}
-                    </li>
-                  ))}
-                </ul>
+              {props.locations && props.locations.length > 0 ? (
+                <>
+                  <ul className="space-y-1 mb-4">
+                    {props.locations.map((location) => (
+                      <li key={location.id} className="text-sm">
+                        {location.locationTitle}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="rounded-md overflow-hidden">
+                    <Map locations={props.locations} />
+                  </div>
+                </>
               ) : (
                 <p className="text-sm text-muted-foreground">No locations added yet.</p>
               )}
@@ -89,14 +91,13 @@ export default function MultiView(Props: Props) {
           <Card>
             <CardHeader>
               <CardTitle>Iternary</CardTitle>
-              <CardDescription>add something here</CardDescription>
+              <CardDescription value="iternary">add something here</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-current">Current iternary</Label>
-                {/* TODO: controlled textarea so user can enter itinerary of items to do need a way to save this to DB currently saved locally*/}
+                <Label htmlFor="itinerary-input">Full itinerary</Label>
                 <textarea
-                  id="tabs-demo-current"
+                  id="itinerary-input"
                   value={itinerary}
                   onChange={(e) => setItinerary(e.target.value)}
                   className="w-full min-h-[6rem] border px-2 py-1 rounded"
@@ -109,29 +110,23 @@ export default function MultiView(Props: Props) {
           </Card>
         </TabsContent>
 
-        {/*need to add the google maps view here (TODO) */}
         <TabsContent value="map">
           <Card>
             <CardHeader>
               <CardTitle>Map</CardTitle>
               <CardDescription>
-                Make changes to your overview here. Click save when you&apos;re
-                done
+                view your trip locations on the map
               </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-name">Name</Label>
-                <Input id="tabs-demo-name" defaultValue="Pedro Duarte" />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-username">Username</Label>
-                <Input id="tabs-demo-username" defaultValue="@peduarte" />
-              </div>
+            <CardContent>
+              {props.locations && props.locations.length > 0 ? (
+                <div className="rounded-md overflow-hidden">
+                  <Map locations={props.locations} />
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">no locations to display</p>
+              )}
             </CardContent>
-            <CardFooter>
-              <Button>Save changes</Button>
-            </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>

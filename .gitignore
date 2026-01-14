@@ -64,5 +64,13 @@ logs/
 .env/*
 # dist
 /dist
+
+# claude
 /.claude
+.claude/
+CLAUDE.md
+.claudeignore
+tmpclaude-*
+
+# prisma generated
 /app/generated/prisma

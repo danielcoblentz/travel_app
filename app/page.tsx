@@ -80,22 +80,22 @@ export default async function TripsPage() {
         </CardContent>
 
         <div>
-          <h2 className="text-xl font-simibold mb-4">
+          <h2 className="text-xl font-semibold mb-4">
             your recent trips
           </h2>
           {trips.length === 0 ? (
             <Card>
-              <CardContent className="flex flex-vcol items-center jsutify-center py-8">
-                <h3 className="text-xl front-medium mb-2"></h3>No trips yet.
+              <CardContent className="flex flex-col items-center justify-center py-8">
+                <h3 className="text-xl font-medium mb-2">No trips yet.</h3>
               </CardContent>
-              <p className="text-center mb-4 max-w-med">
+              <p className="text-center mb-4 max-w-md">
                 start creating your adventure by creating your first trip.
               </p>
               <Link href="/trips/new">
-              <Button> new trip</Button>
+                <Button>new trip</Button>
               </Link>
             </Card>
-          ) : ( <></>)}
+          ) : null}
 
 
         </div>

@@ -13,7 +13,6 @@ type Props = {
 export default function TripsSearch({ trips, placeholder = "Search" }: Props) {
   const [query, setQuery] = useState<string>("");
 
-  // filtered results — used for dropdown or results list
   const filtered = trips.filter((t) =>
     t.text.toLowerCase().includes(query.trim().toLowerCase())
   );

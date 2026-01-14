@@ -1,6 +1,5 @@
 "use client"
 
-// Presentational list — removed internal search state/input so there's only one search bar (TripsSearch/SearchBar)
 import React from "react"
 
 type Item = {

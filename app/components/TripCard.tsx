@@ -52,7 +52,7 @@ export default function TripCard(props: Trip) {
         </p>
       </div>
 
-      {/* Dropdown toggle */}
+      {/* dropdown toggle */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-center gap-1 py-2 border-t border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
@@ -63,7 +63,7 @@ export default function TripCard(props: Trip) {
         />
       </button>
 
-      {/* Expandable content */}
+      {/* expandable content */}
       {isExpanded && (
         <div className="p-3 border-t border-gray-200 bg-gray-50">
           <MultiView {...props} />
