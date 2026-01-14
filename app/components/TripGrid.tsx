@@ -70,7 +70,7 @@ export default function TripGrid({ trips }: TripGridProps) {
             {filteredTrips.map((trip) => (
               <TripCard
                 key={trip.id}
-                {...trip}
+                trip={trip}
                 isExpanded={expandedTripId === trip.id}
                 onToggleExpand={() =>
                   setExpandedTripId(expandedTripId === trip.id ? null : trip.id)

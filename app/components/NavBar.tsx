@@ -1,12 +1,29 @@
 "use client";
 
+import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Building } from "lucide-react";
 
 export default function Navbar() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
+  const router = useRouter();
+  const [switching, setSwitching] = useState(false);
+
+  const toggleRole = async () => {
+    setSwitching(true);
+    const newRole = session?.user?.role === "OWNER" ? "USER" : "OWNER";
+    await fetch("/api/user/role", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: newRole }),
+    });
+    await update();
+    router.refresh();
+    setSwitching(false);
+  };
 
   return (
     <nav className="bg-white shadow-md border-b border-gray-200">
@@ -27,7 +44,7 @@ export default function Navbar() {
               <Link href="/globe" className="text-slate-900 hover:text-sky-500">Globe</Link>
               {session.user?.role === "OWNER" && (
                 <Link href="/owner" className="text-emerald-600 hover:text-emerald-700 font-medium">
-                  Owner Dashboard
+                  <Building className="w-5 h-5" />
                 </Link>
               )}
               <Link href="/cart" className="text-slate-900 hover:text-sky-500">
@@ -40,6 +57,17 @@ export default function Navbar() {
             <div className="w-20 h-10 bg-gray-200 animate-pulse rounded-sm" />
           ) : session ? (
             <div className="flex items-center gap-3">
+              <button
+                onClick={toggleRole}
+                disabled={switching}
+                className={`text-xs px-2 py-1 rounded-full border transition-colors ${
+                  session.user?.role === "OWNER"
+                    ? "bg-emerald-100 text-emerald-700 border-emerald-300"
+                    : "bg-gray-100 text-gray-600 border-gray-300"
+                }`}
+              >
+                {switching ? "..." : session.user?.role === "OWNER" ? "Owner" : "User"}
+              </button>
               {session.user?.image && (
                 <Image
                   src={session.user.image}

@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma schema - defines all database models and relationships
+// run `npx prisma db push` to sync changes, `npx prisma generate` to update client
 
 generator client {
   provider = "prisma-client-js"
@@ -14,12 +11,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// role-based access control: owners can create listings, users can book
 enum Role {
   USER
   OWNER
 }
 
-// NextAuth.js models for authentication
+// nextauth adapter requires these fields - do not modify without checking auth docs
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -70,6 +68,7 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// core entity - trips aggregate locations, bookings, and images
 model Trip {
   id            String          @id @default(cuid())
   title         String
@@ -96,6 +95,7 @@ model Image {
   createdAt DateTime @default(now())
 }
 
+// geocoded via google maps api when user adds an address
 model Location {
   id            String   @id @default(cuid())
   locationTitle String

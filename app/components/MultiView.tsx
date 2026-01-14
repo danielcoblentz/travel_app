@@ -16,7 +16,7 @@ import {
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Trip } from "@/app/types/trip";
-import Map from "@/components/map";
+import Map from "./Map";
 
 export default function MultiView(props: Trip) {
   const [itinerary, setItinerary] = useState("")
