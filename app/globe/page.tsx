@@ -1,9 +1,11 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
-import Globe, { GlobeMethods } from "react-globe.gl";
-import * as THREE from "three";
+import dynamic from "next/dynamic";
+import type { GlobeMethods } from "react-globe.gl";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
+
+const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
 export interface transformedLocation {
     lat: number;

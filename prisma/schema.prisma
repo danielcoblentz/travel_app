@@ -14,6 +14,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  OWNER
+}
+
 // NextAuth.js models for authentication
 model User {
   id            String    @id @default(cuid())
@@ -21,9 +26,13 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  role          Role      @default(USER)
   accounts      Account[]
   sessions      Session[]
   trips         Trip[]
+  hotels        Hotel[]
+  flights       Flight[]
+  cartItems     CartItem[]
 }
 
 model Account {
@@ -62,17 +71,19 @@ model VerificationToken {
 }
 
 model Trip {
-  id          String   @id @default(cuid())
-  title       String
-  destination String
-  startDate   DateTime
-  endDate     DateTime
-  images      Image[]
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  locations Location[]
+  id            String          @id @default(cuid())
+  title         String
+  destination   String
+  startDate     DateTime
+  endDate       DateTime
+  images        Image[]
+  userId        String?
+  user          User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  locations     Location[]
+  hotelBookings HotelBooking[]
+  flightBookings FlightBooking[]
 }
 
 model Image {
@@ -86,12 +97,74 @@ model Image {
 }
 
 model Location {
-  id String @id @defualt(cuid())
+  id            String   @id @default(cuid())
   locationTitle String
-  lat Float
-  lng Float
-  trip Trip @relation(fields: [tripId], refrences: [id])
-  tripId String
-  orderInt @defualt(0)
-  createdAt DateTime @defualt(now)
+  lat           Float
+  lng           Float
+  trip          Trip     @relation(fields: [tripId], references: [id])
+  tripId        String
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+}
+
+model Hotel {
+  id          String         @id @default(cuid())
+  name        String
+  city        String
+  country     String
+  address     String
+  description String?
+  pricePerNight Float
+  imageUrl    String?
+  ownerId     String
+  owner       User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  bookings    HotelBooking[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model Flight {
+  id            String          @id @default(cuid())
+  airline       String
+  flightNumber  String
+  origin        String
+  destination   String
+  departureTime DateTime
+  arrivalTime   DateTime
+  price         Float
+  ownerId       String
+  owner         User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  bookings      FlightBooking[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model HotelBooking {
+  id          String   @id @default(cuid())
+  checkIn     DateTime
+  checkOut    DateTime
+  hotelId     String
+  hotel       Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  tripId      String
+  trip        Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model FlightBooking {
+  id        String   @id @default(cuid())
+  flightId  String
+  flight    Flight   @relation(fields: [flightId], references: [id], onDelete: Cascade)
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemType  String
+  itemId    String
+  tripId    String?
+  createdAt DateTime @default(now())
 }
