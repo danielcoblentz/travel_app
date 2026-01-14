@@ -39,5 +39,5 @@ export async function addLocation(formData: FormData, tripId: string) {
             order: count
         }
     });
-    redirect(`/trips/${tripId}`)
+    redirect("/")
 } 

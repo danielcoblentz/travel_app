@@ -67,7 +67,7 @@ export default function GlobePage() {
                     </h1>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex flex-col lg:flex-row justify-center items-start gap-6">
                     <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                         <div className="p-6">
                             <h2 className="text-2xl font-semibold mb-4 text-center">
@@ -101,7 +101,7 @@ export default function GlobePage() {
                         </div>
                     </div>
 
-                    <div className="lg:col-span-1">
+                    <div className="w-full lg:w-80">
                         <Card className="sticky top-8">
                             <CardHeader> <CardTitle>Your Trips</CardTitle></CardHeader>
                             <CardContent>

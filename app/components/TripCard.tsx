@@ -1,21 +1,26 @@
 "use client"
 
-// displays a single trip summary card
-import { useState } from "react";
-import Image from "next/image";
-import { ChevronDown } from "lucide-react";
-import MultiView from "./MultiView";
-import { Trip } from "@/app/types/trip";
+import Image from "next/image"
+import { ChevronDown } from "lucide-react"
+import MultiView from "./MultiView"
+import { Trip } from "@/app/types/trip"
 
-export default function TripCard(props: Trip) {
-  const [isExpanded, setIsExpanded] = useState(false);
+interface TripCardProps extends Trip {
+  isExpanded?: boolean
+  onToggleExpand?: () => void
+}
 
+export default function TripCard({
+  isExpanded = false,
+  onToggleExpand,
+  ...props
+}: TripCardProps) {
   const formatDate = (date: string) =>
     new Date(date).toLocaleDateString(undefined, {
       month: "short",
       day: "numeric",
       year: "numeric",
-    });
+    })
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md">
@@ -52,9 +57,8 @@ export default function TripCard(props: Trip) {
         </p>
       </div>
 
-      {/* dropdown toggle */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={onToggleExpand}
         className="w-full flex items-center justify-center gap-1 py-2 border-t border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
       >
         <span>View details</span>
@@ -63,12 +67,11 @@ export default function TripCard(props: Trip) {
         />
       </button>
 
-      {/* expandable content */}
       {isExpanded && (
         <div className="p-3 border-t border-gray-200 bg-gray-50">
           <MultiView {...props} />
         </div>
       )}
     </div>
-  );
+  )
 }

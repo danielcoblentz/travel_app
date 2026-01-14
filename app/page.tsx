@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import TripCard from "./components/TripCard";
+import TripGrid from "./components/TripGrid";
 import { getTripStatus, TripStatus } from "./lib/trip";
-import EventSearch from "./components/EventSearch";
 import { auth } from "@/app/auth";
 import { prisma } from "./lib/prisma";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -62,7 +61,7 @@ export default async function TripsPage() {
       <div className="flex items-center justify-between py-6">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <Link href="/newTrip">
-          <Button>Add trip</Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white">Add trip</Button>
         </Link>
       </div>
 
@@ -79,22 +78,7 @@ export default async function TripsPage() {
         </CardContent>
       </Card>
 
-      <div className="mb-6">
-        <EventSearch placeholder="Search events..." />
-      </div>
-
-      <section className="pb-8">
-        <h2 className="text-2xl font-semibold mb-6">My Trips</h2>
-        {tripsWithStatus.length === 0 ? (
-          <p className="text-center text-gray-500">No trips yet. Add your first trip!</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tripsWithStatus.map((trip) => (
-              <TripCard key={trip.id} {...trip} />
-            ))}
-          </div>
-        )}
-      </section>
+      <TripGrid trips={tripsWithStatus} />
     </div>
   );
 }
