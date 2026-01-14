@@ -11,5 +11,10 @@ export async function getCountryFromCoords(lat: number, lng: number): Promise<ge
 
     const data = await response.json()
     const results = data.result[0]
+    const countryComponent = results.address_components.find((component: any) => component.types.includes("country"))
+    const formattedAddress = results.formatted_address || "unknown"
+
+    return {country: countryComponent.long_name || "unknown", formattedAddress};
+
 
 }

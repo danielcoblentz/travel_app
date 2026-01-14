@@ -1,3 +1,4 @@
+import { getCountryFromCoords } from "@/app/actions/geocode";
 import { auth } from "@/app/auth";
 import { prisma } from "@/app/lib/prisma";
 import { NextResponse } from "next/server";
@@ -15,25 +16,32 @@ export async function GET() {
                 userId: session.user?.id
             },
         },
-    sekect: {
+    select: {
         locationTitle: true,
         lat: true,
-        lng: true
+        lng: true,
         trip: {
-            title: true,
+            select: {
+                title: true
+            }
         }
-    } })
+    } });
+    
 
     const transformedLocations = await Promise.all(locatiomns.map(async (loc) => {
-        cont geoCodeResult = await getCountryFromCoords(loc.lat, loc.lng)
+        const geoCodeResult = await getCountryFromCoords(loc.lat, loc.lng)
 
         return {
-            name: '${log.trip.title} - ${geocodeResult.formattedAddress'
+            name: '${log.trip.title} - ${geocodeResult.formattedAddress}',
             lat: loc.lat,
             lng: loc.lng,
-            country: geocodewResult.country
+            country: geoCodeResult.country
         }
-    }))
-    } catch(err){}
+    }));
+
+    return NextResponse.json(transformedLocations);
+    } catch(err){
+        return new NextResponse("internal error", {status: 500})
+    }
 
 }
