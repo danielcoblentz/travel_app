@@ -37,3 +37,14 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(trip, { status: 201 });
 }
+
+export async function GET() {
+  // Replace with your actual data fetching logic
+  const locations = [
+    { lat: 48.8566, lng: 2.3522, country: "France" },
+    { lat: 51.5074, lng: -0.1278, country: "United Kingdom" },
+    // Add your actual data source here
+  ];
+
+  return NextResponse.json(locations);
+}

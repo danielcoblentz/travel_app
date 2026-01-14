@@ -7,41 +7,57 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         const session = await auth();
-        if (!session) {
+        if (!session?.user?.id) {
             return new NextResponse("you are not authenticated", {status: 401})
         }
 
-        const locatiomns = await prisma.location.findMany({ where: {
-            trip: {
-                userId: session.user?.id
+        const locations = await prisma.location.findMany({ 
+            where: {
+                trip: {
+                    userId: session.user.id
+                },
             },
-        },
-    select: {
-        locationTitle: true,
-        lat: true,
-        lng: true,
-        trip: {
             select: {
-                title: true
-            }
+                locationTitle: true,
+                lat: true,
+                lng: true,
+                trip: {
+                    select: {
+                        title: true
+                    }
+                }
+            } 
+        });
+
+        // Return empty array if no locations found
+        if (!locations || locations.length === 0) {
+            return NextResponse.json([]);
         }
-    } });
     
+        const transformedLocations = await Promise.all(locations.map(async (loc) => {
+            try {
+                const geoCodeResult = await getCountryFromCoords(loc.lat, loc.lng);
 
-    const transformedLocations = await Promise.all(locatiomns.map(async (loc) => {
-        const geoCodeResult = await getCountryFromCoords(loc.lat, loc.lng)
+                return {
+                    name: `${loc.trip.title} - ${geoCodeResult?.formattedAddress || 'Unknown'}`,
+                    lat: loc.lat,
+                    lng: loc.lng,
+                    country: geoCodeResult?.country || 'Unknown'
+                };
+            } catch (geoError) {
+                console.error("Geocode error for location:", loc, geoError);
+                return {
+                    name: `${loc.trip.title} - ${loc.locationTitle}`,
+                    lat: loc.lat,
+                    lng: loc.lng,
+                    country: 'Unknown'
+                };
+            }
+        }));
 
-        return {
-            name: '${log.trip.title} - ${geocodeResult.formattedAddress}',
-            lat: loc.lat,
-            lng: loc.lng,
-            country: geoCodeResult.country
-        }
-    }));
-
-    return NextResponse.json(transformedLocations);
-    } catch(err){
-        return new NextResponse("internal error", {status: 500})
+        return NextResponse.json(transformedLocations);
+    } catch(err) {
+        console.error("API pins error:", err);
+        return new NextResponse("internal error", {status: 500});
     }
-
 }

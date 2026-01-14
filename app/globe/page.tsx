@@ -18,18 +18,23 @@ export default function GlobePage() {
 
 
     const [locations, SetLocations] = useState<transformedLocation[]>([])
-
     const [isLoading,SetIsLoading] = useState(true);
-    // this is a set not array
+    
     const[vistiedCountries, setVisitedCountries] = useState<Set<string>>(new Set())
     useEffect(() => {
         const fetchLocations = async () => {
             try {
-                const response = await fetch("/api/trips")
+                const response = await fetch("/api/pins")
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
 
                 const countries = new Set<string>(data.map((loc: transformedLocation ) => loc.country))
                 setVisitedCountries(countries)
+                SetLocations(data);
             }
             catch (err) {
                 console.error("error", err);
@@ -41,7 +46,7 @@ export default function GlobePage() {
         fetchLocations();
     }, []);
 
-    //controls globe attributes ref to doc for more 
+    //controls globe attributes ref to docs for more 
     useEffect(() => {
         if (globeRef.current) {
             globeRef.current.controls().autoRotate = true;
@@ -50,7 +55,7 @@ export default function GlobePage() {
 
     }, []);
    
-    // main content
+    // main globe content
     return (
         
         <div className="min-h-screen bg-gradient-to-b to-gray-50 flex items-center justify-center">
