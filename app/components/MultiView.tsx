@@ -23,6 +23,14 @@ type Props = Trip;
 export default function MultiView(Props: Props) {
   const [itinerary, setItinerary] = useState("")
 
+  const days =
+    Props.startDate && Props.endDate
+      ? Math.round(
+          (new Date(Props.endDate).getTime() - new Date(Props.startDate).getTime()) /
+            (1000 * 60 * 60 * 24)
+        )
+      : null
+
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
       <Tabs defaultValue="overview">
@@ -37,14 +45,11 @@ export default function MultiView(Props: Props) {
             <CardHeader>
               <CardTitle>Trip Summary</CardTitle>
               <CardDescription>
-                  <p className="flex items-center gap-2">
-                    <Calendar size={17}/>
+                  <Calendar size={17}/>
+                  <p className="flex justify-center">
                     {Props.startDate && Props.endDate
-                      ? (() => {
-                          const days = Math.round((new Date(Props.endDate).getTime() - new Date(Props.startDate).getTime()) / (1000 * 60 * 60 * 24));
-                          return `Length of trip: ${days} ${days === 1 ? "day" : "days"}`;
-                        })()
-                      : "Length of trip: N/A"}
+                      ? `length of trip: ${days} ${days === 1 ? "day" : "days"}`
+                      : "length of trip: N/A"}
                   </p>
                 </CardDescription>
             </CardHeader>

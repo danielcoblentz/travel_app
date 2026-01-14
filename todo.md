@@ -1,5 +1,6 @@
-on each trip
+on each trip card
 
 overveiw:
 trip summary
-- dates
+- dates + num days
+

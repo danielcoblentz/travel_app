@@ -1,13 +1,22 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import TripCard from "./components/TripCard";
-import { getTripStatus } from "./lib/trip";
+import { getTripStatus, TripStatus } from "./lib/trip";
 import EventSearch from "./components/EventSearch";
 import { auth } from "@/app/auth";
 import { prisma } from "./lib/prisma";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trip } from "@/app/types/trip";
+
+type Trip = {
+  id: string;
+  name: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  imageUrl: string;
+  status?: TripStatus;
+};
 
 export default async function TripsPage() {
   const session = await auth();
@@ -64,41 +73,25 @@ export default async function TripsPage() {
           </p>
         </CardContent>
 
-        <div className="px-6 pb-6">
-          <h2 className="text-xl font-semibold mb-4">
-            Your Recent Trips
+        <div>
+          <h2 className="text-xl font-simibold mb-4">
+            your recent trips
           </h2>
           {trips.length === 0 ? (
             <Card>
-              <CardContent className="pt-6">
-                <p className="font-medium">No trips yet.</p>
-                <p className="text-gray-500 mt-2">
-                  Start creating your adventure by creating your first trip.
-                </p>
-                <Link href="/newTrip">
-                  <Button className="mt-4">New Trip</Button>
-                </Link>
+              <CardContent className="flex flex-vcol items-center jsutify-center py-8">
+                <h3 className="text-xl front-medium mb-2"></h3>No trips yet.
               </CardContent>
+              <p className="text-center mb-4 max-w-med">
+                start creating your adventure by creating your first trip.
+              </p>
+              <Link href="/trips/new">
+              <Button> new trip</Button>
+              </Link>
             </Card>
-          ) : (
-            <div className="space-y-3">
-              {tripsWithStatus.slice(0, 3).map((trip) => (
-                <div key={trip.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium">{trip.name}</p>
-                    <p className="text-sm text-gray-500">{trip.destination}</p>
-                  </div>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    trip.status === "upcoming" ? "bg-blue-100 text-blue-700" :
-                    trip.status === "ongoing" ? "bg-green-100 text-green-700" :
-                    "bg-gray-100 text-gray-600"
-                  }`}>
-                    {trip.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+          ) : ( <></>)}
+
+
         </div>
       </Card>
 
@@ -107,15 +100,17 @@ export default async function TripsPage() {
         <EventSearch placeholder="Search events..." />
       </header>
 
-      <section className="mt-6 px-4">
+      <section className="mt-6">
         <h2 className="text-center text-2xl mb-6">My Trips</h2>
-        {tripsWithStatus.length === 0 ? (
-          <p className="text-center text-gray-500">No trips yet. Add your first trip!</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
-            {tripsWithStatus.map((trip) => <TripCard key={trip.id} {...trip} />)}
+        <div className="flex justify-center">
+          <div className="w-full max-w-4xl space-y-6 px-4">
+            {tripsWithStatus.length === 0 ? (
+              <p className="text-center text-gray-500">No trips yet. Add your first trip!</p>
+            ) : (
+              tripsWithStatus.map((trip) => <TripCard key={trip.id} {...trip} />)
+            )}
           </div>
-        )}
+        </div>
       </section>
     </>
   );

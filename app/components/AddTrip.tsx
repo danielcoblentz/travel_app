@@ -1,19 +1,16 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
 import { UploadButton } from "@/app/lib/upload-thing";
-import { createTrip } from "@/app/create-trip";
 
 export default function AddTrip() {
   const [trip, setTrip] = useState({
-    title: "",
+    name: "",
     destination: "",
     startDate: "",
     endDate: "",
   });
+
   const [uploadedImage, setUploadedImage] = useState<{ url: string; name: string } | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -22,22 +19,22 @@ export default function AddTrip() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
 
-    try {
-      await createTrip({
-        title: trip.title,
-        destination: trip.destination,
-        startDate: trip.startDate,
-        endDate: trip.endDate,
-        imageUrl: uploadedImage?.url,
-        imageName: uploadedImage?.name,
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create trip");
-      setIsSubmitting(false);
-    }
+    const payload = {
+      ...trip,
+      image: uploadedImage,
+    };
+
+    console.log("Trip data submitted:", payload);
+
+    // reset form after submit
+    setTrip({
+      name: "",
+      destination: "",
+      startDate: "",
+      endDate: "",
+    });
+    setUploadedImage(null);
   };
 
   return (
@@ -45,19 +42,13 @@ export default function AddTrip() {
       <form onSubmit={handleFormSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl mb-4">Add New Trip</h2>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-1" htmlFor="title">Trip Name</label>
+          <label className="block text-sm font-medium mb-1" htmlFor="name">Trip Name</label>
           <input
             type="text"
-            name="title"
-            id="title"
-            value={trip.title}
+            name="name"
+            id="name"
+            value={trip.name}
             onChange={handleInputChange}
             required
             className="border border-gray-300 p-2 w-full rounded"
@@ -103,39 +94,27 @@ export default function AddTrip() {
           />
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Trip Image</label>
 
-          {uploadedImage?.url && (
-            <Image
-              src={uploadedImage.url}
-              alt="Trip preview"
-              className="w-full mb-4 rounded-md max-h-48 object-cover"
-              width={300}
-              height={100}
-            />
-          )}
+      <label>Trip Image</label>
 
-          <UploadButton
-            endpoint="imageUploader"
-            onClientUploadComplete={(res) => {
-              if (res && res[0]?.ufsUrl) {
-                setUploadedImage({ url: res[0].ufsUrl, name: res[0].name });
-              }
-            }}
-            onUploadError={(error: Error) => {
-              console.error("upload error:", error);
-              setError("Failed to upload image");
-            }}
-          />
-        </div>
+      {<imageUrl && (
+        <Image src={imageUrl} alt="Trip repview" className="w-full mb-4 rounded-md max-h-48 object-cover" width={300} height={100/>
+        )}
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-gray-800 hover:bg-gray-900 text-white p-2 rounded w-full disabled:opacity-50"
-        >
-          {isSubmitting ? "Adding Trip..." : "Add Trip"}
+      <UploadButton
+        endpoint="imageUploader"
+        onClientUploadComplete={(res) => {
+          if (res && res[0]?.ufsUrl) {
+            setUploadedImage({ url: res[0].ufsUrl, name: res[0].name });
+          }
+        }}
+        onUploadError={(error: Error) => {
+          console.error("upload error:", error);
+        }}
+      />
+
+        <button type="submit" className="bg-gray-800 hover:bg-gray-900 text-white p-2 rounded">
+          Add Trip
         </button>
       </form>
     </div>

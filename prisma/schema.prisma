@@ -62,19 +62,17 @@ model VerificationToken {
 }
 
 model Trip {
-  id          String     @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   destination String
   startDate   DateTime
   endDate     DateTime
   images      Image[]
-  locations   Location[]
-
   userId    String?
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  locations Location[]
 }
 
 model Image {
@@ -88,12 +86,12 @@ model Image {
 }
 
 model Location {
-  id            String   @id @default(cuid())
+  id String @id @defualt(cuid())
   locationTitle String
-  lat           Float
-  lng           Float
-  trip          Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
-  tripId        String
-  order         Int      @default(0)
-  createdAt     DateTime @default(now())
+  lat Float
+  lng Float
+  trip Trip @relation(fields: [tripId], refrences: [id])
+  tripId String
+  orderInt @defualt(0)
+  createdAt DateTime @defualt(now)
 }
