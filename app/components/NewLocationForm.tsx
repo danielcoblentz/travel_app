@@ -4,7 +4,7 @@ import { useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { addLocation } from "@/app/actions/add-location"
 
-export default function NewLocationClient({ tripId }: { tripId: string }) {
+export default function NewLocationForm({ tripId }: { tripId: string }) {
     const [isPending, startTransition] = useTransition()
 
     return (
