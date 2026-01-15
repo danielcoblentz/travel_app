@@ -61,36 +61,59 @@ export async function POST(request: NextRequest) {
   return NextResponse.json(booking, { status: 201 });
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const session = await auth();
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { searchParams } = new URL(request.url);
+  const viewType = searchParams.get("view");
+
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { role: true },
   });
 
-  if (user?.role !== "OWNER") {
-    return NextResponse.json({ error: "Only owners can view all bookings" }, { status: 403 });
+  // If owner viewing their listings' bookings
+  if (user?.role === "OWNER" && viewType !== "my") {
+    const hotelBookings = await prisma.hotelBooking.findMany({
+      where: { hotel: { ownerId: session.user.id } },
+      include: {
+        hotel: true,
+        trip: { include: { user: { select: { name: true, email: true } } } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const flightBookings = await prisma.flightBooking.findMany({
+      where: { flight: { ownerId: session.user.id } },
+      include: {
+        flight: true,
+        trip: { include: { user: { select: { name: true, email: true } } } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json({ hotelBookings, flightBookings });
   }
 
+  // Return user's own bookings (through their trips)
   const hotelBookings = await prisma.hotelBooking.findMany({
-    where: { hotel: { ownerId: session.user.id } },
+    where: { trip: { userId: session.user.id } },
     include: {
       hotel: true,
-      trip: { include: { user: { select: { name: true, email: true } } } },
+      trip: { select: { title: true, destination: true } },
     },
     orderBy: { createdAt: "desc" },
   });
 
   const flightBookings = await prisma.flightBooking.findMany({
-    where: { flight: { ownerId: session.user.id } },
+    where: { trip: { userId: session.user.id } },
     include: {
       flight: true,
-      trip: { include: { user: { select: { name: true, email: true } } } },
+      trip: { select: { title: true, destination: true } },
     },
     orderBy: { createdAt: "desc" },
   });

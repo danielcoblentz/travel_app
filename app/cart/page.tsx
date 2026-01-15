@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Trash2, Plane, Building, Calendar } from "lucide-react"
+import { Trash2, Plane, Building, Calendar, CheckCircle } from "lucide-react"
 
 type CartItemWithDetails = {
   id: string
@@ -30,9 +30,25 @@ type Trip = {
   destination: string
 }
 
+type HotelBooking = {
+  id: string
+  checkIn: string
+  checkOut: string
+  hotel: { name: string; city: string; pricePerNight: number }
+  trip: { title: string; destination: string }
+}
+
+type FlightBooking = {
+  id: string
+  flight: { airline: string; flightNumber: string; origin: string; destination: string; price: number }
+  trip: { title: string; destination: string }
+}
+
 export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItemWithDetails[]>([])
   const [trips, setTrips] = useState<Trip[]>([])
+  const [hotelBookings, setHotelBookings] = useState<HotelBooking[]>([])
+  const [flightBookings, setFlightBookings] = useState<FlightBooking[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedTrips, setSelectedTrips] = useState<Record<string, string>>({})
   const [checkInDates, setCheckInDates] = useState<Record<string, string>>({})
@@ -41,6 +57,7 @@ export default function CartPage() {
   useEffect(() => {
     fetchCart()
     fetchTrips()
+    fetchBookings()
   }, [])
 
   const fetchCart = async () => {
@@ -60,11 +77,40 @@ export default function CartPage() {
     }
   }
 
+  const fetchBookings = async () => {
+    const res = await fetch("/api/bookings?view=my")
+    if (res.ok) {
+      const data = await res.json()
+      setHotelBookings(data.hotelBookings || [])
+      setFlightBookings(data.flightBookings || [])
+    }
+  }
+
   const removeItem = async (id: string) => {
     const res = await fetch(`/api/cart?id=${id}`, { method: "DELETE" })
     if (res.ok) {
       setCartItems(cartItems.filter((item) => item.id !== id))
     }
+  }
+
+  const calculateNights = (checkIn: string, checkOut: string): number => {
+    if (!checkIn || !checkOut) return 0
+    const start = new Date(checkIn)
+    const end = new Date(checkOut)
+    const diffTime = end.getTime() - start.getTime()
+    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return nights > 0 ? nights : 0
+  }
+
+  const getItemTotal = (item: CartItemWithDetails): number => {
+    if (item.itemType === "hotel" && item.details?.pricePerNight) {
+      const nights = calculateNights(checkInDates[item.id], checkOutDates[item.id])
+      return nights > 0 ? item.details.pricePerNight * nights : item.details.pricePerNight
+    }
+    if (item.itemType === "flight" && item.details?.price) {
+      return item.details.price
+    }
+    return 0
   }
 
   const bookItem = async (cartItemId: string, itemType: string) => {
@@ -95,23 +141,19 @@ export default function CartPage() {
 
     if (res.ok) {
       setCartItems(cartItems.filter((item) => item.id !== cartItemId))
-      alert("Booking confirmed!")
+      fetchBookings()
     } else {
       const data = await res.json()
       alert(data.error || "Booking failed")
     }
   }
 
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString()
+  }
+
   const calculateTotal = () => {
-    return cartItems.reduce((sum, item) => {
-      if (item.itemType === "hotel" && item.details?.pricePerNight) {
-        return sum + item.details.pricePerNight
-      }
-      if (item.itemType === "flight" && item.details?.price) {
-        return sum + item.details.price
-      }
-      return sum
-    }, 0)
+    return cartItems.reduce((sum, item) => sum + getItemTotal(item), 0)
   }
 
   if (loading) {
@@ -162,6 +204,14 @@ export default function CartPage() {
                           ${item.itemType === "hotel" ? item.details?.pricePerNight : item.details?.price}
                           {item.itemType === "hotel" && "/night"}
                         </p>
+                        {item.itemType === "hotel" && checkInDates[item.id] && checkOutDates[item.id] && (
+                          <p className="text-sm text-gray-600 mt-1">
+                            {calculateNights(checkInDates[item.id], checkOutDates[item.id])} nights =
+                            <span className="font-semibold text-emerald-600 ml-1">
+                              ${getItemTotal(item).toFixed(2)} total
+                            </span>
+                          </p>
+                        )}
                       </div>
                     </div>
                     <Button
@@ -239,6 +289,78 @@ export default function CartPage() {
             </CardContent>
           </Card>
         </>
+      )}
+
+      {(hotelBookings.length > 0 || flightBookings.length > 0) && (
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+            <CheckCircle className="w-6 h-6 text-emerald-600" />
+            Confirmed Bookings
+          </h2>
+          <div className="space-y-4">
+            {hotelBookings.map((booking) => (
+              <Card key={booking.id} className="border-emerald-200 bg-emerald-50">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 bg-emerald-100 rounded-lg">
+                      <Building className="w-6 h-6 text-emerald-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold">{booking.hotel.name}</p>
+                      <p className="text-sm text-gray-600">{booking.hotel.city}</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {formatDate(booking.checkIn)} - {formatDate(booking.checkOut)}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Trip: {booking.trip.title}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-emerald-600 font-semibold">
+                        ${booking.hotel.pricePerNight}/night
+                      </p>
+                      <span className="inline-flex items-center gap-1 text-xs text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full mt-1">
+                        <CheckCircle className="w-3 h-3" />
+                        Confirmed
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            {flightBookings.map((booking) => (
+              <Card key={booking.id} className="border-emerald-200 bg-emerald-50">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 bg-emerald-100 rounded-lg">
+                      <Plane className="w-6 h-6 text-emerald-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold">
+                        {booking.flight.airline} {booking.flight.flightNumber}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {booking.flight.origin} → {booking.flight.destination}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Trip: {booking.trip.title}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-emerald-600 font-semibold">
+                        ${booking.flight.price}
+                      </p>
+                      <span className="inline-flex items-center gap-1 text-xs text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full mt-1">
+                        <CheckCircle className="w-3 h-3" />
+                        Confirmed
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   )
