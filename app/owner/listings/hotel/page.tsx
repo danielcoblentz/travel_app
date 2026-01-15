@@ -2,10 +2,12 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Building } from "lucide-react"
+import { UploadButton } from "@/app/lib/upload-thing"
 
 export default function AddHotelPage() {
   const router = useRouter()
@@ -17,8 +19,8 @@ export default function AddHotelPage() {
     address: "",
     description: "",
     pricePerNight: "",
-    imageUrl: "",
   })
+  const [uploadedImage, setUploadedImage] = useState<{ url: string; name: string } | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,7 +29,10 @@ export default function AddHotelPage() {
     const res = await fetch("/api/hotels", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        imageUrl: uploadedImage?.url || "",
+      }),
     })
 
     if (res.ok) {
@@ -108,11 +113,26 @@ export default function AddHotelPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-1 block">Image URL</label>
-              <Input
-                value={form.imageUrl}
-                onChange={(e) => updateField("imageUrl", e.target.value)}
-                placeholder="https://..."
+              <label className="text-sm font-medium mb-1 block">Hotel Image</label>
+              {uploadedImage?.url && (
+                <Image
+                  src={uploadedImage.url}
+                  alt="Hotel preview"
+                  className="w-full mb-4 rounded-md max-h-48 object-cover"
+                  width={300}
+                  height={100}
+                />
+              )}
+              <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  if (res && res[0]?.ufsUrl) {
+                    setUploadedImage({ url: res[0].ufsUrl, name: res[0].name })
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  console.error("upload error:", error)
+                }}
               />
             </div>
             <div className="flex gap-3 pt-4">
