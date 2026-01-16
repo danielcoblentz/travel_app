@@ -42,6 +42,7 @@ export default function HotelsPage() {
 
   useEffect(() => {
     fetchHotels()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleSearch = (e: React.FormEvent) => {

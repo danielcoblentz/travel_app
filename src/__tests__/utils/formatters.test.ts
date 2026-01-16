@@ -29,7 +29,7 @@ describe('Formatters', () => {
 
   describe('formatDate', () => {
     it('should format date correctly', () => {
-      const date = new Date('2024-06-15')
+      const date = new Date('2024-06-15T12:00:00')
       expect(formatDate(date)).toBe('Jun 15, 2024')
     })
   })

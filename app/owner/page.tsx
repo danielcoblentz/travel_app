@@ -28,22 +28,21 @@ export default function OwnerDashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const fetchData = async () => {
+      const [hotelsRes, bookingsRes] = await Promise.all([
+        fetch("/api/hotels"),
+        fetch("/api/bookings"),
+      ])
+
+      if (hotelsRes.ok) setHotels(await hotelsRes.json())
+      if (bookingsRes.ok) {
+        const data = await bookingsRes.json()
+        setHotelBookings(data.hotelBookings || [])
+      }
+      setLoading(false)
+    }
     fetchData()
   }, [])
-
-  const fetchData = async () => {
-    const [hotelsRes, bookingsRes] = await Promise.all([
-      fetch("/api/hotels"),
-      fetch("/api/bookings"),
-    ])
-
-    if (hotelsRes.ok) setHotels(await hotelsRes.json())
-    if (bookingsRes.ok) {
-      const data = await bookingsRes.json()
-      setHotelBookings(data.hotelBookings || [])
-    }
-    setLoading(false)
-  }
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString()

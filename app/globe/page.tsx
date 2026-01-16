@@ -1,7 +1,6 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 import Globe, { GlobeMethods } from "react-globe.gl";
-import * as THREE from "three";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
 

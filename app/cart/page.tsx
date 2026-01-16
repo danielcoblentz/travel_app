@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Trash2, Plane, Building, Calendar, CheckCircle } from "lucide-react"
@@ -54,12 +54,6 @@ export default function CartPage() {
   const [checkInDates, setCheckInDates] = useState<Record<string, string>>({})
   const [checkOutDates, setCheckOutDates] = useState<Record<string, string>>({})
 
-  useEffect(() => {
-    fetchCart()
-    fetchTrips()
-    fetchBookings()
-  }, [])
-
   const fetchCart = async () => {
     const res = await fetch("/api/cart")
     if (res.ok) {
@@ -85,6 +79,13 @@ export default function CartPage() {
       setFlightBookings(data.flightBookings || [])
     }
   }
+
+  useEffect(() => {
+    fetchCart()
+    fetchTrips()
+    fetchBookings()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const removeItem = async (id: string) => {
     const res = await fetch(`/api/cart?id=${id}`, { method: "DELETE" })
