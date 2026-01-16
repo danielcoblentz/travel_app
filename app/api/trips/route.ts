@@ -37,19 +37,3 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(trip, { status: 201 });
 }
-
-export async function GET() {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const trips = await prisma.trip.findMany({
-    where: { userId: session.user.id },
-    select: { id: true, title: true, destination: true },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return NextResponse.json(trips);
-}

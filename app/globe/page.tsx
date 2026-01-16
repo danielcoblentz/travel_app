@@ -1,20 +1,18 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import type { GlobeMethods } from "react-globe.gl";
+import Globe, { GlobeMethods } from "react-globe.gl";
+import * as THREE from "three";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
-
-const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
 export interface transformedLocation {
     lat: number;
     lng: number;
-    country: string;
-    name: string;
+    country: string
 }
 
 
+//boiler plate from docs @ react-globe.gl
 export default function GlobePage() {
     const globeRef = useRef<GlobeMethods | undefined>(undefined);
 
@@ -48,6 +46,7 @@ export default function GlobePage() {
         fetchLocations();
     }, []);
 
+    //controls globe attributes ref to docs for more 
     useEffect(() => {
         if (globeRef.current) {
             globeRef.current.controls().autoRotate = true;
@@ -55,7 +54,8 @@ export default function GlobePage() {
         }
 
     }, []);
-
+   
+    // main globe content
     return (
         
         <div className="min-h-screen bg-gradient-to-b to-gray-50 flex items-center justify-center">
@@ -66,7 +66,7 @@ export default function GlobePage() {
                     </h1>
                 </div>
 
-                <div className="flex flex-col lg:flex-row justify-center items-start gap-6">
+                <div className="flex justify-center">
                     <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                         <div className="p-6">
                             <h2 className="text-2xl font-semibold mb-4 text-center">
@@ -100,26 +100,28 @@ export default function GlobePage() {
                         </div>
                     </div>
 
-                    <div className="w-full lg:w-80">
+                    <div className="lg:col-span-1">
                         <Card className="sticky top-8">
-                            <CardHeader> <CardTitle>Your Trips</CardTitle></CardHeader>
+                            <CardHeader> <CardTitle> Countries visited</CardTitle></CardHeader>
                             <CardContent>
                                 {isLoading ? (
                                     <div className="flex items-center justify-center h-full">
                                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
                                     </div>
                                 ) : (
-                                    <div className="space-y-2 max-h-[500px] overflow-y-auto">
-                                        {locations.length === 0 ? (
-                                            <p className="text-gray-500 text-sm">No trips added yet</p>
-                                        ) : (
-                                            locations.map((location, index) => (
-                                                <div key={index} className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 transition-colors border border-gray-100">
-                                                    <MapPin className="h-4 w-4 text-red-500"/>
-                                                    <span className="font-medium">{location.name}</span>
-                                                </div>
-                                            ))
-                                        )}
+                                    <div className="space-y-4">
+                                        <div className="bg-blue-50 p-4 rounded-lg">
+                                            <p className="text-blue-800 text-sm">You've visited <span className="font-bold"> {" "}{vistiedCountries.size} {" "} </span> countries</p>
+
+                                            <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                                                {Array.from(vistiedCountries).sort().map((country, key) => (
+                                                    <div key={key} className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 transition-colors border border-gray-100">
+                                                        <MapPin className="h-4 w-4 text-red-500"/>
+                                                        <span className="font-medium">{country}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
                             </CardContent>
