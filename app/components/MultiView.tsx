@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import { Calendar, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,7 +8,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -19,8 +17,6 @@ import { Trip } from "@/app/types/trip";
 import Map from "./Map";
 
 export default function MultiView(props: Trip) {
-  const [itinerary, setItinerary] = useState("")
-
   const days =
     props.startDate && props.endDate
       ? Math.round(

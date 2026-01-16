@@ -69,7 +69,7 @@ export default function GlobePage() {
                     <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                         <div className="p-6">
                             <h2 className="text-2xl font-semibold mb-4 text-center">
-                                See where you've been
+                                See where you&apos;ve been
                             </h2>
 
                             <div className="h-[600px] w-[800px] relative flex items-center justify-center">
@@ -110,7 +110,7 @@ export default function GlobePage() {
                                 ) : (
                                     <div className="space-y-4">
                                         <div className="bg-blue-50 p-4 rounded-lg">
-                                            <p className="text-blue-800 text-sm">You've visited <span className="font-bold"> {" "}{vistiedCountries.size} {" "} </span> countries</p>
+                                            <p className="text-blue-800 text-sm">You&apos;ve visited <span className="font-bold"> {" "}{vistiedCountries.size} {" "} </span> countries</p>
 
                                             <div className="space-y-2 max-h-[500px] overflow-y-auto">
                                                 {Array.from(vistiedCountries).sort().map((country, key) => (

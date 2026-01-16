@@ -22,7 +22,7 @@ export async function createTrip(input: CreateTripInput) {
         throw new Error("All fields are required.");
     }
 
-    const trip = await prisma.trip.create({
+    await prisma.trip.create({
         data: {
             title,
             destination,

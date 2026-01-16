@@ -60,6 +60,7 @@ export default function FlightsPage() {
 
   useEffect(() => {
     fetchFlights()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchMode])
 
   const handleSearch = (e: React.FormEvent) => {

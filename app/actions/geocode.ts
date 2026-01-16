@@ -16,7 +16,7 @@ export async function getCountryFromCoords(lat: number, lng: number): Promise<ge
     }
 
     const results = data.results[0]
-    const countryComponent = results.address_components?.find((component: any) => component.types.includes("country"))
+    const countryComponent = results.address_components?.find((component: { types: string[]; long_name: string }) => component.types.includes("country"))
     const formattedAddress = results.formatted_address || "unknown"
 
     return { country: countryComponent?.long_name || "unknown", formattedAddress };

@@ -81,10 +81,10 @@ export default function CartPage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchCart()
     fetchTrips()
     fetchBookings()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const removeItem = async (id: string) => {
