@@ -1,8 +1,18 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
-import Globe, { GlobeMethods } from "react-globe.gl";
+import dynamic from "next/dynamic";
+import { GlobeMethods } from "react-globe.gl";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { MapPin } from "lucide-react";
+
+const Globe = dynamic(() => import("react-globe.gl").then(mod => mod.default), {
+    ssr: false,
+    loading: () => (
+        <div className="flex items-center justify-center h-full">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        </div>
+    )
+});
 
 export interface transformedLocation {
     lat: number;
