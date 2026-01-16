@@ -1,5 +1,7 @@
 # Travel Booking App
 
+![Travel App Globe View](app_preview.png)
+
 A fullstack travel booking application with hotel and flight reservations, role-based access control, and trip management.
 
 ## Features
